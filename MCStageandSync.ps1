@@ -5,6 +5,8 @@
 # -------------------------------
 
 # --- Config ---
+$config = get-content -path /home/cloud/config.json | ConvertFrom-json
+
 $sourcePath      = "/home/cloud/docker/minecraft/*"
 $destinationBase = "/home/cloud/docker/staging"
 $date            = Get-Date -Format "yyyyMMdd"
@@ -14,8 +16,9 @@ $dockerPath      = "/usr/bin/docker"
 $rclonePath      = "/usr/bin/rclone"
 $sleepPath       = "/bin/sleep"
 $sevenZipPath    = "/usr/bin/7z"   # verify with `which 7z`
+$configPath     = "/home/cloud/config.json"
 
-$containerID     = "179d81b825f3"
+$containerID     = "$config.containerID"
 $remoteBase      = "googleDrive:mc-backups"
 
 # Optional: explicitly point to rclone config
