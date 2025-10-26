@@ -3,10 +3,11 @@ Restore Minecraft world from backup, this script will restore the world on the e
 As long as the server is setup the same way as the original server (same folder structure, same server version, etc)
 #>
 
-$landingPath = "/home/cloud/docker/minecraftrecovery"
-$Landingexists = Test-Path -Path $landingPath
-$targetbackup = read-Host "Enter the date of the backup to restore (YYYYMMDD)"
-$rclonebackuplocation = "googleDrive:mc-backups"
+$config               = Get-Content -Path /home/cloud/config.json | ConvertFrom-Json
+$landingPath          = "/home/cloud/docker/minecraftrecovery"
+$Landingexists        = Test-Path -Path $landingPath
+$targetbackup         = read-Host "Enter the date of the backup to restore (YYYYMMDD)"
+$rclonebackuplocation = "$config.rclonePath"
 
 
 #Ensure landing folder exists
