@@ -5,7 +5,8 @@
 # -------------------------------
 
 # --- Config ---
-$config          = Get-Content -Path /home/cloud/config.json | ConvertFrom-Json
+# Ensure config.json is a single JSON object.
+$config          = Get-Content -Path /home/cloud/minecraft_backup/config.json | ConvertFrom-Json
 $sourcePath      = "/home/cloud/docker/minecraft/*"
 $destinationBase = "/home/cloud/docker/staging"
 $date            = Get-Date -Format "yyyyMMdd"
@@ -17,8 +18,11 @@ $sleepPath       = "/bin/sleep"
 $sevenZipPath    = "/usr/bin/7z"
 $configPath      = "/home/cloud/config.json"
 
-$containerID     = "$config.containerID"
-$remoteBase      = "$config.rclonePath"
+# --- CRITICAL FIX: Direct Object Property Access ---
+# Assigning the properties directly from the $config object.
+# We do *not* use quotes here.
+$containerID     = $config.containerID
+$remoteBase      = $config.rclonePath
 
 # Optional: explicitly point to rclone config
 $env:RCLONE_CONFIG = "/home/cloud/.config/rclone/rclone.conf"
@@ -28,9 +32,11 @@ $logFile = "/home/cloud/logs/mc-backup-$date.log"
 Start-Transcript -Path $logFile -Append
 
 Write-Host "=== Minecraft Backup Started: $(Get-Date) ==="
+Write-Host "Using Container ID: $containerID"
 
 # --- 1. Freeze world ---
 Write-Host "Disabling autosave and flushing world..."
+# Use $containerID directly here, as it is now a clean string value.
 & $dockerPath exec $containerID rcon-cli save-off
 & $dockerPath exec $containerID rcon-cli save-all
 & $sleepPath 10
